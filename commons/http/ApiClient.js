@@ -101,6 +101,10 @@ async function updateFocusMode(focusMode) {
   return await request('PUT', `/api/focus/${focusMode.focusId}`, focusMode);
 }
 
+async function deleteFocusMode(focusId) {
+  return await request('DELETE', `/api/focus/${focusId}/`);
+}
+
 // Notes
 
 async function getNotes(tagId, focusId, isArchived, isDeleted, page) {
@@ -317,6 +321,7 @@ export default {
   getFocusModes,
   createFocusMode,
   updateFocusMode,
+  deleteFocusMode,
   getNotes,
   getNoteById,
   createNote,

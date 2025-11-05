@@ -107,6 +107,7 @@ func newRouter() *http.ServeMux {
 	addPrivateRoute(mux, "GET /api/focus/", focus.HandleGetAllFocusModes)
 	addPrivateRoute(mux, "POST /api/focus/", focus.HandleCreateFocusMode)
 	addPrivateRoute(mux, "PUT /api/focus/{focusId}/", focus.HandleUpdateFocusMode)
+	addPrivateRoute(mux, "DELETE /api/focus/{focusId}/", focus.HandleDeleteFocusMode)
 
 	addPrivateRoute(mux, "POST /api/images/", images.HandleUploadImage)
 	addPrivateRoute(mux, "GET /api/images/", images.HandleGetImages)
