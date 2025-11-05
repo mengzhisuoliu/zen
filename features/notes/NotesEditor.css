@@ -275,6 +275,10 @@
         padding: 3px 0;
     }
 
+    p {
+        padding: 6px 0;
+    }
+
     a {
         color: var(--neutral-500);
         text-decoration: none;
