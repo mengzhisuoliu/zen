@@ -20,7 +20,7 @@ import useMarkdownFormatter from "./useMarkdownFormatter.js";
 import "./NotesEditor.css";
 import { CloseIcon, SidebarCloseIcon, SidebarOpenIcon, BackIcon } from "../../commons/components/Icon.jsx";
 
-export default function NotesEditor({ isNewNote, isFloating, onClose }) {
+export default function NotesEditor({ isNewNote, isFloating, isExpanded, onExpandToggle, onClose }) {
   const { selectedNote, handleNoteChange, handlePinToggle } = useNotes();
 
   if (!isNewNote && selectedNote === null) {
@@ -32,7 +32,6 @@ export default function NotesEditor({ isNewNote, isFloating, onClose }) {
   const [content, setContent] = useState(selectedNote?.content || "");
   const [tags, setTags] = useState(selectedNote?.tags || []);
   const [isSaveLoading, setIsSaveLoading] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
 
   const titleRef = useRef(null);
   const textareaRef = useRef(null);
@@ -228,12 +227,8 @@ export default function NotesEditor({ isNewNote, isFloating, onClose }) {
   }
 
   function handleExpandToggleClick() {
-    setIsExpanded((prev) => !prev);
-    const editor = document.querySelector('.notes-editor-container');
-    if (isExpanded) {
-      editor.classList.remove('is-expanded');
-    } else {
-      editor.classList.add('is-expanded');
+    if (onExpandToggle) {
+      onExpandToggle();
     }
   }
 
