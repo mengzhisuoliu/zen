@@ -18,9 +18,9 @@ import useEditorKeyboardShortcuts from "./useEditorKeyboardShortcuts.js";
 import useImageUpload from "./useImageUpload.js";
 import useMarkdownFormatter from "./useMarkdownFormatter.js";
 import "./NotesEditor.css";
-import { CloseIcon, SidebarCloseIcon, SidebarOpenIcon, BackIcon } from "../../commons/components/Icon.jsx";
+import { SidebarCloseIcon, SidebarOpenIcon, BackIcon } from "../../commons/components/Icon.jsx";
 
-export default function NotesEditor({ isNewNote, isFloating, isExpanded, onExpandToggle, onClose }) {
+export default function NotesEditor({ isNewNote, isModal, isExpanded, onExpandToggle, onClose }) {
   const { selectedNote, handleNoteChange, handlePinToggle } = useNotes();
 
   if (!isNewNote && selectedNote === null) {
@@ -113,7 +113,7 @@ export default function NotesEditor({ isNewNote, isFloating, isExpanded, onExpan
 
   const { handleKeyDown } = useEditorKeyboardShortcuts({
     isEditable,
-    isFloating,
+    isModal,
     isExpanded,
     textareaRef,
     onSave: handleSaveClick,
@@ -331,13 +331,12 @@ export default function NotesEditor({ isNewNote, isFloating, isExpanded, onExpan
         note={selectedNote}
         isNewNote={isNewNote}
         isEditable={isEditable}
-        isFloating={isFloating}
+        isModal={isModal}
         isSaveLoading={isSaveLoading}
         isExpanded={isExpanded}
         onSaveClick={handleSaveClick}
         onEditClick={handleEditClick}
         onEditCancelClick={handleEditCancelClick}
-        onCloseClick={handleCloseClick}
         onDeleteClick={handleDeleteClick}
         onArchiveClick={handleArchiveClick}
         onUnarchiveClick={handleUnarchiveClick}
@@ -362,7 +361,7 @@ export default function NotesEditor({ isNewNote, isFloating, isExpanded, onExpan
   );
 }
 
-function Toolbar({ note, isNewNote, isEditable, isFloating, isSaveLoading, isExpanded, onSaveClick, onEditClick, onEditCancelClick, onCloseClick, onDeleteClick, onArchiveClick, onUnarchiveClick, onRestoreClick, onExpandToggleClick, onPinClick, onUnpinClick }) {
+function Toolbar({ note, isNewNote, isEditable, isModal, isSaveLoading, isExpanded, onSaveClick, onEditClick, onEditCancelClick, onDeleteClick, onArchiveClick, onUnarchiveClick, onRestoreClick, onExpandToggleClick, onPinClick, onUnpinClick }) {
   const saveButtonText = isSaveLoading ? "Saving..." : "Save";
 
   function handleClick(e) {
@@ -378,7 +377,7 @@ function Toolbar({ note, isNewNote, isEditable, isFloating, isSaveLoading, isExp
     left: [
       {
         key: 'expand',
-        condition: !isFloating && !isMobile(),
+        condition: !isModal && !isMobile(),
         component: <Button variant="ghost" onClick={onExpandToggleClick}>
           {isExpanded ? <SidebarCloseIcon /> : <SidebarOpenIcon />}
         </Button>
@@ -390,11 +389,6 @@ function Toolbar({ note, isNewNote, isEditable, isFloating, isSaveLoading, isExp
       }
     ],
     right: [
-      {
-        key: 'close',
-        condition: isFloating,
-        component: <Button variant="ghost" onClick={onCloseClick}><CloseIcon /></Button>
-      },
       {
         key: 'save',
         condition: isEditable,

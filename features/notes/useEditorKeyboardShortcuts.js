@@ -2,7 +2,7 @@ import { useEffect, useCallback } from "../../assets/preact.esm.js";
 
 export default function useEditorKeyboardShortcuts({
   isEditable,
-  isFloating,
+  isModal,
   isExpanded,
   textareaRef,
   onSave,
@@ -26,7 +26,7 @@ export default function useEditorKeyboardShortcuts({
 
     if (e.key === 'Escape') {
       e.preventDefault();
-      if (isFloating === true) {
+      if (isModal === true) {
         onClose();
       }
     }
@@ -108,7 +108,7 @@ export default function useEditorKeyboardShortcuts({
         }
       }
     }
-  }, [isEditable, isFloating, isExpanded, textareaRef, onSave, onEdit, onClose, onExpandToggle, onInsertAtCursor, onFormatText]);
+  }, [isEditable, isModal, isExpanded, textareaRef, onSave, onEdit, onClose, onExpandToggle, onInsertAtCursor, onFormatText]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
