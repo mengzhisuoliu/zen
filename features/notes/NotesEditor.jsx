@@ -40,7 +40,7 @@ export default function NotesEditor({ isNewNote, isFloating, onClose }) {
 
   const visibleHeadings = useVisibleHeadings(contentRef, content, isEditable, isExpanded);
 
-  const { insertAtCursor, formatSelectedText, applyMarkdownFormat } = useMarkdownFormatter({
+  const { insertAtCursor, applyMarkdownFormat } = useMarkdownFormatter({
     textareaRef,
     setContent
   });
@@ -122,7 +122,7 @@ export default function NotesEditor({ isNewNote, isFloating, onClose }) {
     onClose: handleCloseClick,
     onExpandToggle: handleExpandToggleClick,
     onInsertAtCursor: insertAtCursor,
-    onFormatText: formatSelectedText
+    onFormatText: applyMarkdownFormat
   });
 
   function handleTextAreaHeight() {
