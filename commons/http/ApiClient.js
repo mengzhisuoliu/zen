@@ -1,9 +1,10 @@
 import { showToast } from "../components/Toast.jsx";
 
-async function request(method, url, payload) {
+async function request(method, url, payload, opts) {
   const options = {
     method: method,
-    headers: {}
+    headers: {},
+    ...opts,
   };
 
   if (payload instanceof FormData) {
@@ -319,6 +320,28 @@ async function deleteToken(tokenId) {
   return await request('DELETE', `/api/mcp/tokens/${tokenId}/`);
 }
 
+// Canvases
+
+async function getCanvases() {
+  return await request('GET', '/api/canvases/');
+}
+
+async function getCanvasById(canvasId) {
+  return await request('GET', `/api/canvases/${canvasId}/`);
+}
+
+async function createCanvas(canvas) {
+  return await request('POST', '/api/canvases/', canvas);
+}
+
+async function updateCanvas(canvasId, canvas, opts) {
+  return await request('PUT', `/api/canvases/${canvasId}/`, canvas, opts);
+}
+
+async function deleteCanvas(canvasId) {
+  return await request('DELETE', `/api/canvases/${canvasId}/`);
+}
+
 export default {
   request,
   checkUser,
@@ -362,5 +385,10 @@ export default {
   incrementTemplateUsage,
   getTokens,
   createToken,
-  deleteToken
+  deleteToken,
+  getCanvases,
+  getCanvasById,
+  createCanvas,
+  updateCanvas,
+  deleteCanvas
 };

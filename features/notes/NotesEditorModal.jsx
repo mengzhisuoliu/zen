@@ -4,15 +4,17 @@ import { ModalBackdrop, ModalContainer, ModalContent, closeModal } from "../../c
 import { useNotes } from "../../commons/contexts/NotesContext.jsx";
 import "./NotesEditorModal.css";
 
-export default function NotesEditorModal({ note, isNewNote }) {
+export default function NotesEditorModal({ note, isNewNote, onModalClose }) {
   const { setSelectedNote } = useNotes();
 
   function handleCloseModal() {
     document.title = "Zen";
     closeModal('.note-modal-root');
+    if (onModalClose) {
+      onModalClose();
+    }
   }
 
-  // Set the selected note when the modal opens
   if (isNewNote !== true) {
     setSelectedNote(note);
   }
