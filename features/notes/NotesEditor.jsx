@@ -8,11 +8,13 @@ import renderMarkdown from '../../commons/utils/renderMarkdown.js';
 import navigateTo from '../../commons/utils/navigateTo.js';
 import isMobile from '../../commons/utils/isMobile.js';
 import NoteDeleteModal from './NoteDeleteModal.jsx';
+import NotesEditorModal from './NotesEditorModal.jsx';
 import DropdownMenu from '../../commons/components/DropdownMenu.jsx';
 import Button from '../../commons/components/Button.jsx';
 import { showToast } from '../../commons/components/Toast.jsx';
 import { closeModal, openModal } from '../../commons/components/Modal.jsx';
-import { useNotes } from "../../commons/contexts/NotesContext.jsx";
+import { useNotes, NotesProvider } from "../../commons/contexts/NotesContext.jsx";
+import { AppProvider } from '../../commons/contexts/AppContext.jsx';
 import { useVisibleHeadings } from "./useVisibleHeadings.js";
 import useEditorKeyboardShortcuts from "./useEditorKeyboardShortcuts.js";
 import useImageUpload from "./useImageUpload.js";
@@ -232,6 +234,26 @@ export default function NotesEditor({ isNewNote, isModal, isExpanded, onExpandTo
     }
   }
 
+  function handleInternalNoteLinkClick(e) {
+    const link = e.target.closest('a[data-note-id]');
+    if (link === null) {
+      return;
+    }
+    e.preventDefault();
+    const noteId = link.getAttribute('data-note-id');
+    ApiClient.getNoteById(noteId)
+      .then(note => {
+        openModal(
+          <AppProvider>
+            <NotesProvider>
+              <NotesEditorModal note={note} />
+            </NotesProvider>
+          </AppProvider>,
+          '.note-modal-root'
+        );
+      });
+  }
+
   function handlePinClick() {
     if (handlePinToggle && selectedNote) {
       handlePinToggle(selectedNote.noteId, selectedNote.isPinned);
@@ -283,7 +305,7 @@ export default function NotesEditor({ isNewNote, isModal, isExpanded, onExpandTo
     );
   } else {
     contentArea = (
-      <div className="notes-editor-rendered" ref={contentRef} dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />
+      <div className="notes-editor-rendered" ref={contentRef} dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} onClick={handleInternalNoteLinkClick} />
     );
   }
 
