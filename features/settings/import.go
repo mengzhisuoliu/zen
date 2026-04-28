@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"strings"
+	"time"
 	"zen/commons/utils"
 	"zen/features/notes"
 	"zen/features/tags"
@@ -43,10 +44,23 @@ func HandleImport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	body, createdAt, updatedAt := extractFrontmatter(string(content))
+
 	note := notes.Note{
 		Title:   strings.TrimSuffix(handler.Filename, ext),
-		Content: string(content),
+		Content: body,
 		Tags:    extractTagsFromPath(path),
+	}
+
+	if createdAt != nil && updatedAt != nil {
+		note.CreatedAt = *createdAt
+		note.UpdatedAt = *updatedAt
+	} else if createdAt != nil {
+		note.CreatedAt = *createdAt
+		note.UpdatedAt = *createdAt
+	} else if updatedAt != nil {
+		note.CreatedAt = *updatedAt
+		note.UpdatedAt = *updatedAt
 	}
 
 	_, err = notes.CreateNote(note)
@@ -59,6 +73,43 @@ func HandleImport(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{"message": "File uploaded successfully"}`))
+}
+
+func extractFrontmatter(content string) (string, *time.Time, *time.Time) {
+	content = strings.ReplaceAll(content, "\r\n", "\n")
+
+	if !strings.HasPrefix(content, "---\n") {
+		return content, nil, nil
+	}
+
+	end := strings.Index(content[4:], "\n---\n")
+	if end == -1 {
+		return content, nil, nil
+	}
+
+	frontmatter := content[4 : end+4]
+	body := strings.TrimPrefix(content[end+9:], "\n")
+
+	var createdAt, updatedAt *time.Time
+	for _, line := range strings.Split(frontmatter, "\n") {
+		key, value, found := strings.Cut(line, ":")
+		if !found {
+			continue
+		}
+		key = strings.TrimSpace(key)
+		value = strings.TrimSpace(value)
+		t, err := time.Parse(time.RFC3339, value)
+		if err != nil {
+			continue
+		}
+		if key == "created" && createdAt == nil {
+			createdAt = &t
+		} else if key == "updated" && updatedAt == nil {
+			updatedAt = &t
+		}
+	}
+
+	return body, createdAt, updatedAt
 }
 
 func extractTagsFromPath(path string) []tags.Tag {
