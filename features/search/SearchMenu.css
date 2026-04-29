@@ -98,15 +98,16 @@
         }
 
         .search-result-images {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 6px;
             padding: 10px;
             padding-top: 0;
 
             img {
                 height: 185px;
-                width: 185px;
-                margin: 6px 6px 0 0;
+                width: 100%;
+                margin: 0;
                 box-sizing: border-box;
                 object-fit: cover;
                 border-radius: 4px;
