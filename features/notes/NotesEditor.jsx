@@ -16,6 +16,7 @@ import { closeModal, openModal } from '../../commons/components/Modal.jsx';
 import { useNotes, NotesProvider } from "../../commons/contexts/NotesContext.jsx";
 import { AppProvider } from '../../commons/contexts/AppContext.jsx';
 import { useLayout } from "../../commons/contexts/LayoutContext.jsx";
+import NotePreview from './NotePreview.jsx';
 import { useVisibleHeadings } from "./useVisibleHeadings.js";
 import useEditorKeyboardShortcuts from "./useEditorKeyboardShortcuts.js";
 import useImageUpload from "./useImageUpload.js";
@@ -25,7 +26,7 @@ import { SidebarCloseIcon, SidebarOpenIcon, BackIcon } from "../../commons/compo
 
 export default function NotesEditor({ isNewNote, isModal, isExpandable = false, onClose }) {
   const { selectedNote, handleNoteChange, handlePinToggle } = useNotes();
-  const { isEditorExpanded, toggleEditorExpanded } = useLayout();
+  const { isEditorExpanded, toggleEditorExpanded, setSidePanelContent } = useLayout();
 
   if (!isNewNote && selectedNote === null) {
     return null;
@@ -244,18 +245,23 @@ export default function NotesEditor({ isNewNote, isModal, isExpandable = false, 
       return;
     }
     e.preventDefault();
-    const noteId = link.getAttribute('data-note-id');
-    ApiClient.getNoteById(noteId)
-      .then(note => {
-        openModal(
-          <AppProvider>
-            <NotesProvider>
-              <NotesEditorModal note={note} />
-            </NotesProvider>
-          </AppProvider>,
-          '.note-modal-root'
-        );
-      });
+    const noteId = parseInt(link.getAttribute('data-note-id'), 10);
+
+    if (isMobile()) {
+      ApiClient.getNoteById(noteId)
+        .then(note => {
+          openModal(
+            <AppProvider>
+              <NotesProvider>
+                <NotesEditorModal note={note} />
+              </NotesProvider>
+            </AppProvider>,
+            '.note-modal-root'
+          );
+        });
+    } else {
+      setSidePanelContent(<NotePreview noteId={noteId} />);
+    }
   }
 
   function handlePinClick() {

@@ -4,9 +4,11 @@ import isMobile from '../utils/isMobile.js';
 const defaultValue = {
   isSidebarOpen: false,
   isEditorExpanded: false,
+  sidePanelContent: null,
   toggleSidebar: () => {},
   closeSidebar: () => {},
   toggleEditorExpanded: () => {},
+  setSidePanelContent: () => {},
 };
 
 const LayoutContext = createContext(defaultValue);
@@ -14,6 +16,7 @@ const LayoutContext = createContext(defaultValue);
 export function LayoutProvider({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile());
   const [isEditorExpanded, setIsEditorExpanded] = useState(false);
+  const [sidePanelContent, setSidePanelContent] = useState(null);
 
   const toggleSidebar = useCallback(() => {
     setIsSidebarOpen(prev => !prev);
@@ -44,9 +47,11 @@ export function LayoutProvider({ children }) {
     <LayoutContext.Provider value={{
       isSidebarOpen,
       isEditorExpanded,
+      sidePanelContent,
       toggleSidebar,
       closeSidebar,
       toggleEditorExpanded,
+      setSidePanelContent,
     }}>
       {children}
     </LayoutContext.Provider>

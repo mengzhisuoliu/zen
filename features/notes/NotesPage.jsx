@@ -1,5 +1,6 @@
 import { h, Fragment, useState, useEffect } from "../../assets/preact.esm.js"
 import Sidebar from '../../commons/components/Sidebar.jsx';
+import SidePanel from '../../commons/components/SidePanel.jsx';
 import NotesList from './NotesList.jsx';
 import NotesEditor from './NotesEditor.jsx';
 import BulkActionsPanel from './BulkActionsPanel.jsx';
@@ -224,6 +225,8 @@ function NotesPageContent({ noteId }) {
         <div className={`${editorClassName}${isPageExpanded ? " is-expanded" : ""}`}>
           {editorContent}
         </div>
+
+        <SidePanel />
 
         <MobileNavbar />
         <div className="note-modal-root"></div>
